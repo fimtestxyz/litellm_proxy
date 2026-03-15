@@ -21,9 +21,21 @@ except ImportError:
     def save_search_results(*args, **kwargs):
         pass  # No-op if storage not available
 
+try:
+    from url_fetcher import get_url_context, fetch_and_format_urls
+except ImportError:
+    async def get_url_context(*args, **kwargs):
+        return ""  # No-op if fetcher not available
+    
+    async def fetch_and_format_urls(*args, **kwargs):
+        return ""
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("web_search_plugin")
+
+# Enable URL content fetching
+ENABLE_URL_FETCH = os.getenv("ENABLE_URL_FETCH", "true").lower() == "true"
 
 
 class WebSearchHook(CustomLogger):
@@ -288,6 +300,17 @@ class WebSearchHook(CustomLogger):
             source_name = "DuckDuckGo" if search_provider == "ddgs" else "Web Search"
             context_text = self._format_search_results(unique_results[:5], source_name)
             
+            # 5. Optionally fetch URL content for more detailed context
+            url_content = ""
+            if ENABLE_URL_FETCH:
+                try:
+                    max_urls = int(os.getenv("MAX_URL_FETCH", "2"))
+                    url_content = await get_url_context(unique_results[:5], max_urls=max_urls)
+                    if url_content:
+                        logger.info(f"Fetched content from {max_urls} URLs")
+                except Exception as e:
+                    logger.warning(f"URL content fetch failed: {e}")
+            
             # Build system prompt
             temporal_note = ""
             if temporal_info:
@@ -296,7 +319,8 @@ class WebSearchHook(CustomLogger):
             system_prompt_addition = (
                 f"{temporal_note}"
                 f"{context_text}"
-                "Use the above search results to provide accurate, up-to-date information. "
+                f"{url_content}"
+                "Use the above search results and URL content to provide accurate, up-to-date information. "
                 "Cite the sources when possible. If the search results don't contain "
                 "relevant information, you may still answer based on your knowledge "
                 "but note that the information may be outdated."
