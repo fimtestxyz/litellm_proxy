@@ -15,6 +15,12 @@ try:
 except ImportError:
     TemporalParser = None
 
+try:
+    from search_storage import save_search_results
+except ImportError:
+    def save_search_results(*args, **kwargs):
+        pass  # No-op if storage not available
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("web_search_plugin")
@@ -89,7 +95,7 @@ class WebSearchHook(CustomLogger):
             logger.warning(f"Temporal parsing failed: {e}")
             return None
     
-    async def _search_ddgs(self, query: str, max_results: int = 5, timelimit: Optional[str] = None, temporal_query_mod: Optional[str] = None) -> List[Dict]:
+    async def _search_ddgs(self, query: str, max_results: int = 5, timelimit: Optional[str] = None, temporal_query_mod: Optional[str] = None, temporal_info: Optional[Dict] = None) -> List[Dict]:
         """Search using DuckDuckGo."""
         if not self.ddgs_client:
             logger.warning("DDGS client not available")
@@ -108,12 +114,26 @@ class WebSearchHook(CustomLogger):
                 safesearch="moderate",
                 timelimit=timelimit
             )
+            
+            # Save results to file
+            if results:
+                save_search_results(
+                    query=query,
+                    results=results,
+                    provider="duckduckgo",
+                    temporal_info=temporal_info,
+                    metadata={
+                        "search_query": search_query,
+                        "timelimit": timelimit
+                    }
+                )
+            
             return results
         except Exception as e:
             logger.error(f"DDGS search failed: {str(e)}")
             return []
     
-    async def _search_tavily(self, query: str, max_results: int = 5) -> List[Dict]:
+    async def _search_tavily(self, query: str, max_results: int = 5, temporal_info: Optional[Dict] = None) -> List[Dict]:
         """Search using Tavily API."""
         tavily_api_key = os.getenv("TAVILY_API_KEY")
         if not tavily_api_key:
@@ -136,7 +156,9 @@ class WebSearchHook(CustomLogger):
                 data = response.json()
                 
                 results = data.get("results", [])
-                return [
+                
+                # Format results
+                formatted_results = [
                     {
                         "title": r.get("title", "No Title"),
                         "url": r.get("url", ""),
@@ -145,6 +167,17 @@ class WebSearchHook(CustomLogger):
                     }
                     for r in results
                 ]
+                
+                # Save results to file
+                if formatted_results:
+                    save_search_results(
+                        query=query,
+                        results=formatted_results,
+                        provider="tavily",
+                        temporal_info=temporal_info
+                    )
+                
+                return formatted_results
         except Exception as e:
             logger.error(f"Tavily search failed: {str(e)}")
             return []
@@ -222,13 +255,19 @@ class WebSearchHook(CustomLogger):
             
             # 3. Perform Search(es)
             if search_provider in ["ddgs", "duckduckgo", "both"]:
-                ddgs_results = await self._search_ddgs(last_message, max_results=5, timelimit=timelimit, temporal_query_mod=temporal_query_mod)
+                ddgs_results = await self._search_ddgs(
+                    last_message, 
+                    max_results=5, 
+                    timelimit=timelimit, 
+                    temporal_query_mod=temporal_query_mod,
+                    temporal_info=temporal_info
+                )
                 all_results.extend(ddgs_results)
                 logger.info(f"DDGS found {len(ddgs_results)} results")
             
             if search_provider in ["tavily", "both"]:
                 # Tavily doesn't use timelimit the same way, but we can adjust query
-                tavily_results = await self._search_tavily(last_message, max_results=5)
+                tavily_results = await self._search_tavily(last_message, max_results=5, temporal_info=temporal_info)
                 all_results.extend(tavily_results)
                 logger.info(f"Tavily found {len(tavily_results)} results")
             

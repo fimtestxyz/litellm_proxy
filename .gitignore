@@ -22,6 +22,8 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/.pnpm-debug.log*
 
+web_search/*json
+
 # OS
 .DS_Store
 Thumbs.db
