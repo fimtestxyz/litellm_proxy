@@ -1,0 +1,27 @@
+# Backend - Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+.env
+.proxy.pid
+proxy.log
+payload_logs/
+.pytest_cache/
+
+# Frontend - Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.env*.local
+frontend/.vercel
+frontend/*.log
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

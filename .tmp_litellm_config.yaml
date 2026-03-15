@@ -1,0 +1,74 @@
+general_settings:
+  master_key: sk-1234
+litellm_settings:
+  cache: true
+  cache_params:
+    type: local
+  callbacks:
+  - custom_hooks.web_search_hook
+  - payload_logger.payload_logger
+  drop_params: true
+  num_retries: 3
+  retry: true
+  set_verbose: true
+model_list:
+- litellm_params:
+    api_base: os.environ/OLLAMA_API_BASE
+    model: ollama/*
+    stream: true
+  model_name: ollama/*
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/qwen3.5:latest
+    stream: true
+  model_name: qwen3.5
+- litellm_params:
+    api_key: os.environ/OPENAI_API_KEY
+    model: gpt-4o-mini
+    stream: true
+  model_name: gpt-4o-mini
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/llama3:70b-instruct
+    stream: true
+  model_name: llama3:70b-instruct
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/qwen2.5-coder:32b
+    stream: true
+  model_name: qwen2.5-coder:32b
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/glm-4.7-flash:latest
+    stream: true
+  model_name: glm-4.7-flash:latest
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/qwen2.5-coder:14b
+    stream: true
+  model_name: qwen2.5-coder:14b
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/deepseek-coder:33b
+    stream: true
+  model_name: deepseek-coder:33b
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/qwen3-coder:30b
+    stream: true
+  model_name: qwen3-coder:30b
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/qwq:latest
+    stream: true
+  model_name: qwq:latest
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/qwen3-vl:4b
+    stream: true
+  model_name: qwen3-vl:4b
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/glm-4.6:cloud
+    stream: true
+  model_name: glm-4.6:cloud

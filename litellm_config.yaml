@@ -1,0 +1,39 @@
+model_list:
+  # Wildcard Ollama - Allows calling any model via ollama/model_name
+  - model_name: "ollama/*"
+    litellm_params:
+      model: "ollama/*"
+      api_base: "os.environ/OLLAMA_API_BASE"
+      stream: true
+
+  # Local Ollama Model (Explicitly defined)
+  - model_name: "qwen3.5"
+    litellm_params:
+      model: "ollama/qwen3.5:latest"
+      api_base: "http://127.0.0.1:11434"
+      stream: true
+  
+  # OpenAI Fallback
+  - model_name: "gpt-4o-mini"
+    litellm_params:
+      model: "gpt-4o-mini"
+      api_key: "os.environ/OPENAI_API_KEY"
+      stream: true
+
+litellm_settings:
+  set_verbose: true
+  drop_params: true
+  retry: true
+  num_retries: 3
+  
+  # Caching: Use local in-memory cache for native execution (M4 Pro speed)
+  cache: true
+  cache_params:
+    type: "local"
+
+  # Register custom python callbacks
+  # Using WebSearchHook and PayloadLogger
+  callbacks: ["custom_hooks.web_search_hook", "payload_logger.payload_logger"]
+
+general_settings:
+  master_key: "sk-1234"
