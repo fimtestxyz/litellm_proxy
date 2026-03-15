@@ -4,11 +4,16 @@ import logging
 from typing import Optional, Dict, Any, List
 from litellm.integrations.custom_logger import CustomLogger
 
-# Import our DDGS module
+# Import our modules
 try:
     from ddgs_search import get_ddgs_instance, DuckDuckGoSearch
 except ImportError:
     DuckDuckGoSearch = None
+
+try:
+    from temporal_parser import get_temporal_parser, TemporalParser
+except ImportError:
+    TemporalParser = None
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -23,6 +28,8 @@ class WebSearchHook(CustomLogger):
     - DDGS: Free, no API key required (default)
     - Tavily: Requires API key, more comprehensive results
     
+    Also supports temporal parsing to enhance search with time-based queries.
+    
     Set environment variable SEARCH_PROVIDER to choose:
     - "ddgs" or "duckduckgo" - Use DuckDuckGo (default, free)
     - "tavily" - Use Tavily (requires TAVILY_API_KEY)
@@ -31,12 +38,23 @@ class WebSearchHook(CustomLogger):
     
     def __init__(self):
         self.ddgs_client: Optional[DuckDuckGoSearch] = None
+        self.temporal_parser: Optional[TemporalParser] = None
+        
+        # Initialize DDGS client
         if DuckDuckGoSearch:
             try:
                 self.ddgs_client = get_ddgs_instance()
                 logger.info("DuckDuckGo search client initialized")
             except Exception as e:
                 logger.warning(f"Failed to initialize DDGS client: {e}")
+        
+        # Initialize temporal parser
+        if TemporalParser:
+            try:
+                self.temporal_parser = get_temporal_parser()
+                logger.info("Temporal parser initialized")
+            except Exception as e:
+                logger.warning(f"Failed to initialize temporal parser: {e}")
     
     def _get_search_provider(self) -> str:
         """Get the configured search provider."""
@@ -51,7 +69,6 @@ class WebSearchHook(CustomLogger):
         search_keywords = [
             "search", "find", "look up", "what is", "who is", "when did",
             "latest", "news", "current", "today", "yesterday",
-            "2024", "2025", "2026",  # Years - likely want current info
             "weather", "temperature", "stock", "price",
             "how to", "how does", "why is", "what are",
             "list of", "top", "best", "review",
@@ -61,18 +78,35 @@ class WebSearchHook(CustomLogger):
         message_lower = message.lower()
         return any(k in message_lower for k in search_keywords)
     
-    async def _search_ddgs(self, query: str, max_results: int = 5) -> List[Dict]:
+    def _parse_temporal(self, query: str) -> Optional[Dict[str, Any]]:
+        """Parse temporal expression from query."""
+        if not self.temporal_parser:
+            return None
+        
+        try:
+            return self.temporal_parser.parse(query)
+        except Exception as e:
+            logger.warning(f"Temporal parsing failed: {e}")
+            return None
+    
+    async def _search_ddgs(self, query: str, max_results: int = 5, timelimit: Optional[str] = None, temporal_query_mod: Optional[str] = None) -> List[Dict]:
         """Search using DuckDuckGo."""
         if not self.ddgs_client:
             logger.warning("DDGS client not available")
             return []
         
+        # Modify query with temporal info if provided
+        search_query = query
+        if temporal_query_mod:
+            search_query = f"{temporal_query_mod} {query}"
+        
         try:
             results = self.ddgs_client.search(
-                query=query,
+                query=search_query,
                 max_results=max_results,
                 region="wt-wt",
-                safesearch="moderate"
+                safesearch="moderate",
+                timelimit=timelimit
             )
             return results
         except Exception as e:
@@ -121,6 +155,10 @@ class WebSearchHook(CustomLogger):
             return ""
         
         formatted = [f"\n\n[{source} SEARCH RESULTS]"]
+        
+        # Add temporal context if available
+        formatted.append("\n[/SEARCH RESULTS]\n")
+        
         for i, r in enumerate(results, 1):
             title = r.get("title", "No Title")
             url = r.get("url", "")
@@ -144,8 +182,8 @@ class WebSearchHook(CustomLogger):
         """
         LiteLLM hook that runs before each model call.
         
-        Detects if a search is needed, performs the search,
-        and injects the results into the prompt.
+        Detects if a search is needed, parses temporal context,
+        performs the search, and injects the results into the prompt.
         """
         request_data = kwargs.get("data", {})
         messages = request_data.get("messages", [])
@@ -168,16 +206,28 @@ class WebSearchHook(CustomLogger):
 
             logger.info(f"🔍 Web search triggered for: {last_message[:100]}...")
             
+            # 2. Parse temporal expression
+            temporal_info = self._parse_temporal(last_message)
+            timelimit = None
+            temporal_query_mod = None
+            if temporal_info:
+                logger.info(f"📅 Temporal context: {temporal_info.get('description', 'unknown')}")
+                # Get timelimit parameter for DDGS
+                if self.temporal_parser:
+                    timelimit = self._get_timelimit(temporal_info)
+                    temporal_query_mod = self.temporal_parser.format_query_modifier(temporal_info)
+            
             search_provider = self._get_search_provider()
             all_results: List[Dict] = []
             
-            # 2. Perform Search(es)
+            # 3. Perform Search(es)
             if search_provider in ["ddgs", "duckduckgo", "both"]:
-                ddgs_results = await self._search_ddgs(last_message, max_results=5)
+                ddgs_results = await self._search_ddgs(last_message, max_results=5, timelimit=timelimit, temporal_query_mod=temporal_query_mod)
                 all_results.extend(ddgs_results)
                 logger.info(f"DDGS found {len(ddgs_results)} results")
             
             if search_provider in ["tavily", "both"]:
+                # Tavily doesn't use timelimit the same way, but we can adjust query
                 tavily_results = await self._search_tavily(last_message, max_results=5)
                 all_results.extend(tavily_results)
                 logger.info(f"Tavily found {len(tavily_results)} results")
@@ -195,12 +245,18 @@ class WebSearchHook(CustomLogger):
                 logger.warning("No search results found")
                 return request_data
 
-            # 3. Format and Inject Context
+            # 4. Format and Inject Context
             source_name = "DuckDuckGo" if search_provider == "ddgs" else "Web Search"
             context_text = self._format_search_results(unique_results[:5], source_name)
             
+            # Build system prompt
+            temporal_note = ""
+            if temporal_info:
+                temporal_note = f"\n[TEMPORAL CONTEXT: User is asking about '{temporal_info.get('description', 'recent period')}'.]\n"
+            
             system_prompt_addition = (
-                f"\n{context_text}"
+                f"{temporal_note}"
+                f"{context_text}"
                 "Use the above search results to provide accurate, up-to-date information. "
                 "Cite the sources when possible. If the search results don't contain "
                 "relevant information, you may still answer based on your knowledge "
@@ -223,6 +279,28 @@ class WebSearchHook(CustomLogger):
             logger.error(f"Web search hook error: {str(e)}")
 
         return request_data
+    
+    def _get_timelimit(self, temporal_info: Dict[str, Any]) -> Optional[str]:
+        """Convert temporal info to DDGS timelimit parameter."""
+        t_type = temporal_info.get("type")
+        unit = temporal_info.get("unit")
+        value = temporal_info.get("value", 1)
+        
+        # Year reference
+        if t_type == "year":
+            return None  # Don't use timelimit for specific years
+        
+        # Map units to timelimit values
+        if unit == "day":
+            return "d"
+        elif unit == "week":
+            return "w"
+        elif unit == "month":
+            return "m"
+        elif unit == "year":
+            return "y"
+        
+        return None
 
 
 # This object is what litellm will instantiate
