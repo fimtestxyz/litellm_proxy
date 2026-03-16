@@ -1,0 +1,43 @@
+{
+  "query": "Write a python function to sort a list of integers.",
+  "provider": "duckduckgo",
+  "timestamp": "2026-03-16T08:25:42.416311",
+  "result_count": 5,
+  "temporal_info": null,
+  "metadata": {
+    "search_query": "Write a python function to sort a list of integers.",
+    "timelimit": null
+  },
+  "results": [
+    {
+      "title": "sorting - Python - Human sort of numbers with alpha numeric,",
+      "url": "https://stackoverflow.com/questions/5254021/python-human-sort-of-numbers-with-alpha-numeric-but-in-pyqt-and-a-lt-oper",
+      "description": "...tocome up with some transformationofyour data whichPythonwouldsortin the correct order, and thenwritethat transformationasaPythonfunction...",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "Python sorting - A list of objects - Stack Overflow",
+      "url": "https://stackoverflow.com/questions/2338531/python-sorting-a-list-of-objects",
+      "description": "In the second case we allocateanewlistofpairsofthe resultofthe keyfunction, and the original value. ...Python3.x,auser hastoprovidea...",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "python - How to sort strings in a list based on a integer part?",
+      "url": "https://stackoverflow.com/questions/64430382/how-to-sort-strings-in-a-list-based-on-a-integer-part",
+      "description": "I would liketowriteafunctionwhichsortsstrings inalistby theirintegerpart. ... It's based ona@Ashwini Chaudhary's answer (Sortlistof...",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "python - Sort a list in a list by numbers - Stack Overflow",
+      "url": "https://stackoverflow.com/questions/67947717/sort-a-list-in-a-list-by-numbers",
+      "description": "Then you can obtain yourlistsorted and in reverse , if you giveaskey the customfunctiondefined. ... Your Answer”, you agreetoour termsof...",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "Sorting lists in python - Stack Overflow",
+      "url": "https://stackoverflow.com/questions/11732133/sorting-lists-in-python",
+      "description": "... that element is passedtothe keyfunctionand the return valueofthatfunctionis actually whatpythonusestodetermine ordering whensorting.",
+      "source": "DuckDuckGo"
+    }
+  ]
+}

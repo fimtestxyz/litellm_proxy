@@ -1,0 +1,43 @@
+{
+  "query": "What is the capital of France?",
+  "provider": "duckduckgo",
+  "timestamp": "2026-03-16T08:14:15.552634",
+  "result_count": 5,
+  "temporal_info": null,
+  "metadata": {
+    "search_query": "What is the capital of France?",
+    "timelimit": null
+  },
+  "results": [
+    {
+      "title": "What is the Capital of France",
+      "url": "https://wanttoknowit.com/what-is-the-capital-of-france/",
+      "description": "...ofthese citiesisthecapital, keep reading to find out. ...WhatisthecapitalcityofFrance?Thecapital, and largest, cityofFranceisParis.",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "Besides Paris, what is the capital of France?",
+      "url": "https://riddles.net/besides-paris-what-is-the-capital-of-france",
+      "description": "Besides Paris,whatisthecapitalofFrance? ... You use it between your head and your toes,themore it worksthethinner it grows.",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "What is the Capital of France? Paris – Countryaah.com",
+      "url": "https://www.countryaah.com/france-faqs/",
+      "description": "WhatistheCapitalofFrance? Paris ... Paris,thecapitalcityofFrance,isoneofthemost famous and influential cities intheworld.",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "What is the Capital of France? - WorldAtlas",
+      "url": "https://www.worldatlas.com/articles/what-is-the-capital-of-france.html",
+      "description": "WhatistheCapitalofFrance? ... AsthecapitalcityofFrance,thecity plays host tothenational governmentofFrance.",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "What is the Capital of France? | Mappr",
+      "url": "https://www.mappr.co/capital-cities/france/",
+      "description": "However, Paris only becametheofficialcapitalofFranceduringthereignofClovisI, inthelate 5th and early 6th century.",
+      "source": "DuckDuckGo"
+    }
+  ]
+}

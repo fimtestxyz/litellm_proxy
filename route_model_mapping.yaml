@@ -1,0 +1,8 @@
+# Mapping logical names to actual provider model strings
+# This ensures LiteLLM sends the correct string to Ollama/Cloud
+mapping:
+  fast: "ollama/phi3.5:3.8b"
+  coding: "ollama/qwen2.5-coder:14b"
+  reasoning: "ollama/llama3:70b-instruct"
+  summary: "ollama/qwen3-vl:4b"
+  flash: "ollama/phi3.5:3.8b"

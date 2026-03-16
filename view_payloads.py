@@ -10,7 +10,7 @@ from rich import print as rprint
 console = Console()
 
 def get_latest_logs(limit=5):
-    log_files = glob.glob("payload_logs/*.json")
+    log_files = glob.glob("logs/payload_logs/*.json")
     if not log_files:
         return []
     

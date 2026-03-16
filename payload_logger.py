@@ -10,7 +10,7 @@ logger = logging.getLogger("payload_logger")
 
 class PayloadLogger(CustomLogger):
     def __init__(self):
-        self.log_dir = "payload_logs"
+        self.log_dir = "logs/payload_logs"
         os.makedirs(self.log_dir, exist_ok=True)
 
     def _save_log(self, request_id: str, stage: str, data: Any):

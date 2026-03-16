@@ -35,7 +35,7 @@ except ImportError:
     HAS_TRAFILATURA = False
 
 # Storage directory for fetched content
-CONTENT_DIR = "web_search/content"
+CONTENT_DIR = "logs/web_search/content"
 
 def get_content_dir() -> str:
     """Get or create the content storage directory."""

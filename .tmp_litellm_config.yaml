@@ -7,11 +7,41 @@ litellm_settings:
   callbacks:
   - custom_hooks.web_search_hook
   - payload_logger.payload_logger
+  - routing_hook.smart_router_hook
   drop_params: true
   num_retries: 3
   retry: true
   set_verbose: true
 model_list:
+- litellm_params:
+    api_base: os.environ/OLLAMA_API_BASE
+    model: ollama/qwen2.5:3b
+    stream: true
+  model_name: fast
+- litellm_params:
+    api_base: os.environ/OLLAMA_API_BASE
+    model: ollama/qwen2.5-coder:14b
+    stream: true
+  model_name: coding
+- litellm_params:
+    api_base: os.environ/OLLAMA_API_BASE
+    model: ollama/llama3:70b-instruct
+    stream: true
+  model_name: reasoning
+- litellm_params:
+    api_base: os.environ/OLLAMA_API_BASE
+    model: ollama/qwen3-vl:4b
+    stream: true
+  model_name: summary
+- litellm_params:
+    api_base: os.environ/OLLAMA_API_BASE
+    model: ollama/qwen3-vl:4b
+    stream: true
+  model_name: flash
+- litellm_params:
+    api_base: os.environ/OLLAMA_API_BASE
+    model: ollama/phi3.5:3.8b
+  model_name: smart-proxy
 - litellm_params:
     api_base: os.environ/OLLAMA_API_BASE
     model: ollama/*
@@ -27,6 +57,11 @@ model_list:
     model: gpt-4o-mini
     stream: true
   model_name: gpt-4o-mini
+- litellm_params:
+    api_base: http://127.0.0.1:11434
+    model: ollama/phi3.5:3.8b
+    stream: true
+  model_name: phi3.5:3.8b
 - litellm_params:
     api_base: http://127.0.0.1:11434
     model: ollama/llama3:70b-instruct

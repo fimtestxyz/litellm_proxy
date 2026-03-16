@@ -1,0 +1,43 @@
+{
+  "query": "Think step by step: what are the implications of quantum computing on modern cryptography?",
+  "provider": "duckduckgo",
+  "timestamp": "2026-03-16T08:17:27.780884",
+  "result_count": 5,
+  "temporal_info": null,
+  "metadata": {
+    "search_query": "Think step by step: what are the implications of quantum computing on modern cryptography?",
+    "timelimit": null
+  },
+  "results": [
+    {
+      "title": "Impact of Quantum Computing in Modern Cryptography",
+      "url": "https://www.ijeijournal.com/papers/Vol13-Issue12/1312153160.pdf",
+      "description": "ABSTRACT: Cryptography has been used from ancient time for preserving the confidentiality of data. Thus, cryptography research has also been evolving from ...Missing:Think| Show results with:Think",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "Quantum computers and their threat to modern cryptography",
+      "url": "https://www.qticompany.com/quantum-computers-and-their-threat-to-modern-cryptography/",
+      "description": "28 Jul 2022—This means that the security of today's cryptography will potentially be broken, in the next future, by the upcoming quantum machines.Missing:Think| Show results with:Think",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "Chapter: 4 Quantum Computing's Implications for Cryptography",
+      "url": "https://www.nationalacademies.org/read/25196/chapter/6",
+      "description": "Practical quantum computing at scale would have a significant impact on several cryptographic algorithms currently in wide use. This section explains what these ...",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "(PDF) Impact of Quantum Computing in Modern Cryptography",
+      "url": "https://www.researchgate.net/publication/387503891_Impact_of_Quantum_Computing_in_Modern_Cryptography",
+      "description": "29 Dec 2024—Quantum computers can reach a level of optimization that would break many of today's encryption keys in less time than it takes to generate them ...Missing:Think| Show results with:Think",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "Quantum Computing's Impact on Cryptography — The Future of ...",
+      "url": "https://medium.com/@RocketMeUpCybersecurity/quantum-computings-impact-on-cryptography-the-future-of-encryption-1f8804205d86",
+      "description": "Quantum computing has the potential to disrupt the entire field of cryptography, rendering many of today's encryption methods vulnerable.",
+      "source": "DuckDuckGo"
+    }
+  ]
+}

@@ -1,4 +1,47 @@
 model_list:
+  # --- Logical Model Names (Smart Routing Targets) ---
+  
+  # Fast Reasoning / Default
+  - model_name: "fast"
+    litellm_params:
+      model: "ollama/qwen2.5:3b" # Assuming qwen3.5 refers to latest small qwen
+      api_base: "os.environ/OLLAMA_API_BASE"
+      stream: true
+
+  # Coding Specialized
+  - model_name: "coding"
+    litellm_params:
+      model: "ollama/qwen2.5-coder:14b"
+      api_base: "os.environ/OLLAMA_API_BASE"
+      stream: true
+
+  # Deep Reasoning / Heavy Task
+  - model_name: "reasoning"
+    litellm_params:
+      model: "ollama/llama3:70b-instruct"
+      api_base: "os.environ/OLLAMA_API_BASE"
+      stream: true
+
+  # Summarization / Vision
+  - model_name: "summary"
+    litellm_params:
+      model: "ollama/qwen3-vl:4b"
+      api_base: "os.environ/OLLAMA_API_BASE"
+      stream: true
+
+  # Quick Flash Responses
+  - model_name: "flash"
+    litellm_params:
+      model: "ollama/qwen3-vl:4b" 
+      api_base: "os.environ/OLLAMA_API_BASE"
+      stream: true
+
+  # The 'smart-proxy' entry point for automatic routing
+  - model_name: "smart-proxy"
+    litellm_params:
+      model: "ollama/phi3.5:3.8b" # Placeholder, will be changed by hook
+      api_base: "os.environ/OLLAMA_API_BASE"
+
   # Wildcard Ollama - Allows calling any model via ollama/model_name
   - model_name: "ollama/*"
     litellm_params:
@@ -32,8 +75,8 @@ litellm_settings:
     type: "local"
 
   # Register custom python callbacks
-  # Using WebSearchHook and PayloadLogger
-  callbacks: ["custom_hooks.web_search_hook", "payload_logger.payload_logger"]
+  # Using WebSearchHook, PayloadLogger, and SmartRouterHook
+  callbacks: ["custom_hooks.web_search_hook", "payload_logger.payload_logger", "routing_hook.smart_router_hook"]
 
 general_settings:
   master_key: "sk-1234"

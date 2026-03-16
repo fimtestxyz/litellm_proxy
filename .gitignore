@@ -22,7 +22,9 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/.pnpm-debug.log*
 
-web_search/*json
+logs/web_search/*json
+logs/web_search/**md
+logs/**
 
 # OS
 .DS_Store
