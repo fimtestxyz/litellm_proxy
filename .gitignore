@@ -26,6 +26,10 @@ logs/web_search/*json
 logs/web_search/**md
 logs/**
 
+.test_profile/**
+.chrome_profile/**
+
 # OS
 .DS_Store
 Thumbs.db
+

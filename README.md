@@ -4,26 +4,29 @@ This project implements a secure, resilient, and extensible AI reverse proxy usi
 
 ## Features
 - **Unified API:** Acts as an OpenAI-compatible gateway for multiple LLMs (OpenAI, Anthropic, Ollama).
-- **Web Search Plugin:** A custom pre-call hook that triggers a web search (using Tavily) for time-sensitive or factual queries, augmenting the prompt with real-time context.
+- **Web Search Plugin:** A custom pre-call hook that triggers a web search (Google, DuckDuckGo, or Tavily) for time-sensitive or factual queries, augmenting the prompt with real-time context.
+- **Google Search (Native):** Scrapes Google results using a local Chrome profile and Playwright (CDP) for high-quality, stealthy search results.
 - **Resilience:** Built-in retries and fallback mechanisms.
-- **Scalability:** Integrated with Redis for caching and rate limiting.
 
 ## Setup
 
 ### Prerequisites
 - Python 3.12+ (managed with `uv`)
+- Playwright browsers: `uv run playwright install chromium`
 - Docker & Docker Compose (optional, for full deployment)
 
 ### Environment Variables
 Create a `.env` file with the following keys:
 ```env
 OPENAI_API_KEY=your_openai_key
-TAVILY_API_KEY=your_tavily_key
+SEARCH_PROVIDER=google  # Options: google, ddgs, tavily, both
+ENABLE_GOOGLE_SEARCH=true
 ```
 
 ### Installation
 ```bash
 uv sync
+uv run playwright install chromium
 ```
 
 ### Running Tests

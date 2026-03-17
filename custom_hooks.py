@@ -30,28 +30,34 @@ except ImportError:
     async def fetch_and_format_urls(*args, **kwargs):
         return ""
 
+try:
+    from chrome_web_search import search_sync as chrome_search
+except ImportError:
+    chrome_search = None
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("web_search_plugin")
 
 # Enable URL content fetching
 ENABLE_URL_FETCH = os.getenv("ENABLE_URL_FETCH", "true").lower() == "true"
+ENABLE_GOOGLE_SEARCH = os.getenv("ENABLE_GOOGLE_SEARCH", "true").lower() == "true"
 
 
 class WebSearchHook(CustomLogger):
     """
     LiteLLM Custom Logger for Web Search Augmentation.
     
-    Supports both DuckDuckGo (DDGS) and Tavily as search providers.
-    - DDGS: Free, no API key required (default)
-    - Tavily: Requires API key, more comprehensive results
-    
-    Also supports temporal parsing to enhance search with time-based queries.
+    Supports Google (Chrome/Playwright) and DuckDuckGo (DDGS) as search providers.
+    - Google: Scrapes results via local Chrome profile (default)
+    - DDGS: Free, no API key required
+    - Tavily: Requires API key, comprehensive results
     
     Set environment variable SEARCH_PROVIDER to choose:
-    - "ddgs" or "duckduckgo" - Use DuckDuckGo (default, free)
+    - "google" or "chrome" - Use Google via Chrome (default)
+    - "ddgs" or "duckduckgo" - Use DuckDuckGo (free)
     - "tavily" - Use Tavily (requires TAVILY_API_KEY)
-    - "both" - Use both and combine results
+    - "both" - Use both Google and DDGS
     """
     
     def __init__(self):
@@ -76,7 +82,7 @@ class WebSearchHook(CustomLogger):
     
     def _get_search_provider(self) -> str:
         """Get the configured search provider."""
-        return os.getenv("SEARCH_PROVIDER", "ddgs").lower()
+        return os.getenv("SEARCH_PROVIDER", "google").lower()
     
     def _detect_search_intent(self, message: str) -> bool:
         """
@@ -266,6 +272,40 @@ class WebSearchHook(CustomLogger):
             all_results: List[Dict] = []
             
             # 3. Perform Search(es)
+            
+            # Google Search (via Chrome)
+            if ENABLE_GOOGLE_SEARCH and chrome_search and search_provider in ["google", "chrome", "both"]:
+                try:
+                    google_results = chrome_search(
+                        query=last_message,
+                        num_results=10
+                    )
+                    # Convert to same format as DDGS
+                    google_formatted = [
+                        {
+                            "title": r.get("title", ""),
+                            "url": r.get("url", ""),
+                            "description": r.get("description", ""),
+                            "source": "Google"
+                        }
+                        for r in google_results
+                    ]
+                    
+                    # Save results to file
+                    if google_formatted:
+                        save_search_results(
+                            query=last_message,
+                            results=google_formatted,
+                            provider="google",
+                            temporal_info=temporal_info
+                        )
+                    
+                    all_results.extend(google_formatted)
+                    logger.info(f"Google (Chrome) found {len(google_formatted)} results")
+                except Exception as e:
+                    logger.warning(f"Google search failed: {e}")
+            
+            # DuckDuckGo Search
             if search_provider in ["ddgs", "duckduckgo", "both"]:
                 ddgs_results = await self._search_ddgs(
                     last_message, 
@@ -277,6 +317,7 @@ class WebSearchHook(CustomLogger):
                 all_results.extend(ddgs_results)
                 logger.info(f"DDGS found {len(ddgs_results)} results")
             
+            # Tavily Search
             if search_provider in ["tavily", "both"]:
                 # Tavily doesn't use timelimit the same way, but we can adjust query
                 tavily_results = await self._search_tavily(last_message, max_results=5, temporal_info=temporal_info)
@@ -297,15 +338,24 @@ class WebSearchHook(CustomLogger):
                 return request_data
 
             # 4. Format and Inject Context
-            source_name = "DuckDuckGo" if search_provider == "ddgs" else "Web Search"
-            context_text = self._format_search_results(unique_results[:5], source_name)
+            source_map = {
+                "google": "Google",
+                "chrome": "Google",
+                "ddgs": "DuckDuckGo",
+                "duckduckgo": "DuckDuckGo",
+                "tavily": "Tavily",
+                "both": "Combined Web"
+            }
+            source_name = source_map.get(search_provider, "Web Search")
+            context_text = self._format_search_results(unique_results[:8], source_name)
             
             # 5. Optionally fetch URL content for more detailed context
             url_content = ""
             if ENABLE_URL_FETCH:
                 try:
                     max_urls = int(os.getenv("MAX_URL_FETCH", "2"))
-                    url_content = await get_url_context(unique_results[:5], max_urls=max_urls)
+                    # Use unique results for content fetching
+                    url_content = await get_url_context(unique_results[:8], max_urls=max_urls)
                     if url_content:
                         logger.info(f"Fetched content from {max_urls} URLs")
                 except Exception as e:

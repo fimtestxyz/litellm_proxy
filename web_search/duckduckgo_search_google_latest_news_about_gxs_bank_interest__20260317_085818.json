@@ -1,0 +1,52 @@
+{
+  "query": "search google latest news about gxs bank interest rate",
+  "provider": "duckduckgo",
+  "timestamp": "2026-03-17T08:58:18.306328",
+  "result_count": 5,
+  "temporal_info": {
+    "type": "relative",
+    "unit": "days",
+    "value": 7,
+    "description": "past 7 days",
+    "time_range": [
+      "2026-03-10T08:57:42.198364",
+      "2026-03-17T08:57:42.198364"
+    ]
+  },
+  "metadata": {
+    "search_query": "[2026-03-10 TO 2026-03-17] search google latest news about gxs bank interest rate",
+    "timelimit": null
+  },
+  "results": [
+    {
+      "title": "GXS Bank Lowers Interest Rates - Singapore",
+      "url": "https://mysweetretirement.com/gxs-bank-lowers-interest-rates/",
+      "description": "14 Feb 2026—The Main Account rate will drop from 1.08% per annum to 0.88% per annum, while the Saving Pockets rate will be revised from 1.18% per annum to ...Missing:[2026-03-102026-03-17]google",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "GXS Savings Account | Daily interest with no hoops",
+      "url": "https://www.gxs.com.sg/savings-account",
+      "description": "T&Cs apply. The effective interest rate (EIR) of 2.18% p.a. is an annualized figure for a S$5,000 3-month Boost Pocket placement, calculated by projecting ...Missing:[2026-03-102026-03-17]google",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "GXS FlexiLoan Interest Rate Singapore (2026)",
+      "url": "https://www.moneysmart.sg/personal-loan/gxs-flexiloan-interest-rate-singapore-ms",
+      "description": "19 Feb 2026—EIR: From 2.02% p.a. The Promotional Interest Rate is valid from 19 Sept - 28 Feb 2026. Refer to T&Cs for more details.Missing:[2026-03-102026-03-17]searchgoogle",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "GXS Bank Lowers Interest Rates - Singapore",
+      "url": "https://thefinance.sg/2026/02/14/gxs-bank-lowers-interest-rates/",
+      "description": "14 Feb 2026—The Main Account rate will drop from 1.08% per annum to 0.88% per annum, while the Saving Pockets rate will be revised from 1.18% per annum to ...",
+      "source": "DuckDuckGo"
+    },
+    {
+      "title": "GXS Bank | Banking made better",
+      "url": "https://www.gxs.com.sg/",
+      "description": "GXS Bank is a digital bank that lets you get daily interest and instant cashback. Flexible loans. Invest from just S$1. Owned by Grab and Singtel.Missing:[2026-03-102026-03-17]",
+      "source": "DuckDuckGo"
+    }
+  ]
+}

@@ -17,4 +17,6 @@ dependencies = [
     "python-dateutil>=2.9.0",
     "markdownify>=1.2.0",
     "trafilatura>=2.0.0",
+    "playwright>=1.43.0",
+    "playwright-stealth>=1.0.6",
 ]

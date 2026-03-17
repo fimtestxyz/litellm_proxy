@@ -8,6 +8,7 @@ for logging and debugging purposes.
 import os
 import json
 import logging
+import re
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 
@@ -24,18 +25,33 @@ def get_storage_dir() -> str:
     return STORAGE_DIR
 
 
-def generate_filename(provider: str = "duckduckgo") -> str:
+def generate_filename(provider: str = "duckduckgo", query: Optional[str] = None) -> str:
     """
-    Generate a filename with provider prefix and timestamp suffix.
+    Generate a filename with provider prefix, query slug, and timestamp suffix.
     
     Args:
         provider: Search provider name (default: duckduckgo)
+        query: Optional search query to create a slug from
         
     Returns:
-        Filename string: provider_timestamp.json
+        Filename string: provider_queryslug_timestamp.json
     """
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-    return f"{provider}_{timestamp}.json"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    slug = ""
+    if query:
+        # Create a URL-safe slug from the query
+        slug = re.sub(r'[^a-zA-Z0-9\s]', '', query.lower())
+        slug = re.sub(r'\s+', '_', slug).strip('_')
+        slug = slug[:50]
+        if slug:
+            slug = f"_{slug}"
+            
+    # If no slug, add microsecond to avoid collisions
+    if not slug:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        
+    return f"{provider}{slug}_{timestamp}.json"
 
 
 def convert_to_serializable(obj: Any) -> Any:
@@ -82,7 +98,7 @@ def save_search_results(
         Path to the saved file
     """
     storage_dir = get_storage_dir()
-    filename = generate_filename(provider)
+    filename = generate_filename(provider, query)
     filepath = os.path.join(storage_dir, filename)
     
     # Convert temporal_info to serializable format

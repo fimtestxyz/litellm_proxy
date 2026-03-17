@@ -2,14 +2,12 @@
 > frontend@0.1.0 dev
 > next dev -p 3000
 
-⨯ Failed to start server
-Error: listen EADDRINUSE: address already in use :::3000
-    at <unknown> (Error: listen EADDRINUSE: address already in use :::3000)
-    at new Promise (<anonymous>) {
-  code: 'EADDRINUSE',
-  errno: -48,
-  syscall: 'listen',
-  address: '::',
-  port: 3000
-}
-[?25h
+⚠ Invalid next.config.ts options detected: 
+⚠     Unrecognized key(s) in object: 'port'
+⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://198.19.249.3:3000
+
+✓ Starting...
+✓ Ready in 527ms
