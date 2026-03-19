@@ -31,7 +31,7 @@ except ImportError:
         return ""
 
 try:
-    from chrome_web_search import search_sync as chrome_search
+    from chrome_web_search import search_with_chrome as chrome_search
 except ImportError:
     chrome_search = None
 
@@ -42,6 +42,7 @@ logger = logging.getLogger("web_search_plugin")
 # Enable URL content fetching
 ENABLE_URL_FETCH = os.getenv("ENABLE_URL_FETCH", "true").lower() == "true"
 ENABLE_GOOGLE_SEARCH = os.getenv("ENABLE_GOOGLE_SEARCH", "true").lower() == "true"
+INTERNET_SEARCH_FIRST = os.getenv("INTERNET_SEARCH_FIRST", "false").lower() == "true"
 
 
 class WebSearchHook(CustomLogger):
@@ -90,6 +91,10 @@ class WebSearchHook(CustomLogger):
         
         Checks for common search trigger keywords.
         """
+        # If INTERNET_SEARCH_FIRST is enabled, always search
+        if INTERNET_SEARCH_FIRST:
+            return True
+
         search_keywords = [
             "search", "find", "look up", "what is", "who is", "when did",
             "latest", "news", "current", "today", "yesterday",
@@ -276,7 +281,7 @@ class WebSearchHook(CustomLogger):
             # Google Search (via Chrome)
             if ENABLE_GOOGLE_SEARCH and chrome_search and search_provider in ["google", "chrome", "both"]:
                 try:
-                    google_results = chrome_search(
+                    google_results = await chrome_search(
                         query=last_message,
                         num_results=10
                     )

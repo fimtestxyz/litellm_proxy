@@ -9,12 +9,15 @@ Supports:
 - Content extraction (main content only)
 - Error handling and timeout
 - Content caching
+- Multiple implementations (Python, JavaScript/Playwright)
 """
 
 import os
 import re
 import httpx
 import logging
+import asyncio
+import json
 from typing import Optional, Dict, Any, List
 from datetime import datetime, timedelta
 from urllib.parse import urlparse
@@ -63,25 +66,13 @@ def extract_domain(url: str) -> str:
     return parsed.netloc or "unknown"
 
 
-async def fetch_url_content(
+async def _fetch_with_python(
     url: str,
     timeout: int = 30,
     user_agent: str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 ) -> Optional[Dict[str, Any]]:
-    """
-    Fetch URL and convert to markdown.
-    
-    Args:
-        url: The URL to fetch
-        timeout: Request timeout in seconds
-        user_agent: User agent string
-        
-    Returns:
-        Dictionary with markdown content and metadata, or None if failed
-    """
+    """Original Python implementation for URL fetching."""
     try:
-        logger.info(f"Fetching URL: {url}")
-        
         headers = {
             "User-Agent": user_agent,
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -121,7 +112,6 @@ async def fetch_url_content(
             if not markdown_content and html_to_markdown:
                 try:
                     # Simple HTML cleaning before conversion
-                    # Remove scripts and styles
                     cleaned_html = re.sub(r'<script[^>]*>.*?</script>', '', html_content, flags=re.DOTALL | re.IGNORECASE)
                     cleaned_html = re.sub(r'<style[^>]*>.*?</style>', '', cleaned_html, flags=re.DOTALL | re.IGNORECASE)
                     cleaned_html = re.sub(r'<header[^>]*>.*?</header>', '', cleaned_html, flags=re.DOTALL | re.IGNORECASE)
@@ -136,7 +126,6 @@ async def fetch_url_content(
             # Last resort: simple HTML to text
             if not markdown_content:
                 try:
-                    # Simple HTML tag removal
                     text = re.sub(r'<[^>]+>', ' ', html_content)
                     text = re.sub(r'\s+', ' ', text)
                     text = text.strip()
@@ -146,13 +135,8 @@ async def fetch_url_content(
                     logger.warning(f"Regex extraction failed: {e}")
             
             if not markdown_content:
-                logger.error(f"Failed to extract content from {url}")
                 return None
-            
-            # Truncate if too long (keep within reasonable limits for LLM)
-            if len(markdown_content) > 15000:
-                markdown_content = markdown_content[:15000] + "\n\n[... content truncated ...]"
-            
+                
             return {
                 "url": url,
                 "domain": extract_domain(url),
@@ -161,40 +145,98 @@ async def fetch_url_content(
                 "fetched_at": datetime.now().isoformat(),
                 "char_count": len(markdown_content)
             }
-            
-    except httpx.TimeoutException:
-        logger.error(f"Timeout fetching {url}")
-        return None
-    except httpx.HTTPError as e:
-        logger.error(f"HTTP error fetching {url}: {e}")
-        return None
     except Exception as e:
-        logger.error(f"Error fetching {url}: {e}")
+        logger.error(f"Python fetch error for {url}: {e}")
         return None
+
+
+async def _fetch_with_js(
+    url: str,
+    timeout: int = 30
+) -> Optional[Dict[str, Any]]:
+    """JavaScript/Playwright implementation for URL fetching."""
+    try:
+        # Check if url_fetcher.js exists
+        js_fetcher = os.path.join(os.path.dirname(__file__), "url_fetcher.js")
+        if not os.path.exists(js_fetcher):
+            logger.error(f"JS fetcher script not found at {js_fetcher}")
+            return await _fetch_with_python(url, timeout)
+
+        # Call the JS script
+        # Using a timeout slightly longer than the fetch timeout
+        cmd = ["node", js_fetcher, url, "--timeout", str(timeout * 1000)]
+        
+        process = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        
+        stdout, stderr = await process.communicate()
+        
+        if process.returncode != 0:
+            logger.error(f"JS fetcher failed with exit code {process.returncode}")
+            if stderr:
+                logger.error(f"JS stderr: {stderr.decode()}")
+            return await _fetch_with_python(url, timeout)
+            
+        content = stdout.decode()
+        if not content:
+            logger.warning(f"JS fetcher returned empty content for {url}")
+            return await _fetch_with_python(url, timeout)
+            
+        return {
+            "url": url,
+            "domain": extract_domain(url),
+            "content": content,
+            "content_type": "text/markdown (via js)",
+            "fetched_at": datetime.now().isoformat(),
+            "char_count": len(content)
+        }
+    except Exception as e:
+        logger.error(f"JS fetch error for {url}: {e}")
+        return await _fetch_with_python(url, timeout)
+
+
+async def fetch_url_content(
+    url: str,
+    timeout: int = 30,
+    user_agent: str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+) -> Optional[Dict[str, Any]]:
+    """
+    Fetch URL and convert to markdown using the configured implementation.
+    """
+    implementation = os.getenv("URL_FETCHER_IMPLEMENTATION", "python").lower()
+    
+    logger.info(f"Fetching URL ({implementation}): {url}")
+    
+    if implementation == "js":
+        return await _fetch_with_js(url, timeout)
+    else:
+        return await _fetch_with_python(url, timeout, user_agent)
 
 
 def save_fetched_content(content_data: Dict[str, Any]) -> str:
     """
     Save fetched content to a markdown file.
-    
-    Args:
-        content_data: Dictionary with URL and content
-        
-    Returns:
-        Path to saved file
     """
     content_dir = get_content_dir()
     filename = generate_content_filename(content_data["url"])
     filepath = os.path.join(content_dir, filename)
     
     try:
+        # Check if content already contains headers (JS implementation adds them)
+        content = content_data["content"]
+        
         with open(filepath, 'w', encoding='utf-8') as f:
-            f.write(f"# Source: {content_data['url']}\n")
-            f.write(f"# Domain: {content_data['domain']}\n")
-            f.write(f"# Fetched: {content_data['fetched_at']}\n")
-            f.write(f"# Characters: {content_data['char_count']}\n")
-            f.write("\n---\n\n")
-            f.write(content_data["content"])
+            if not content.startswith("# Source:"):
+                f.write(f"# Source: {content_data['url']}\n")
+                f.write(f"# Domain: {content_data['domain']}\n")
+                f.write(f"# Fetched: {content_data['fetched_at']}\n")
+                f.write(f"# Characters: {content_data['char_count']}\n")
+                f.write("\n---\n\n")
+            
+            f.write(content)
         
         logger.info(f"Saved content to {filepath}")
         return filepath
@@ -211,14 +253,6 @@ async def fetch_and_format_urls(
 ) -> str:
     """
     Fetch multiple URLs and format as markdown context for LLM.
-    
-    Args:
-        urls: List of URLs to fetch
-        max_urls: Maximum number of URLs to process
-        save_to_file: Whether to save content to files
-        
-    Returns:
-        Formatted markdown string with content from URLs
     """
     urls_to_fetch = urls[:max_urls]
     results = []
@@ -241,7 +275,11 @@ async def fetch_and_format_urls(
         formatted.append(f"\n### Source {i}: {result['domain']}")
         formatted.append(f"**URL**: {result['url']}")
         formatted.append(f"**Fetched**: {result['fetched_at']}")
-        formatted.append(f"\n{result['content']}\n")
+        
+        # Add content, ensuring it's not double-headered
+        content = result['content']
+        # If content starts with metadata, try to extract just the body or keep it as is
+        formatted.append(f"\n{content}\n")
         formatted.append("---\n")
     
     return "".join(formatted)
@@ -253,13 +291,6 @@ async def get_url_context(
 ) -> str:
     """
     Get additional context by fetching URLs from search results.
-    
-    Args:
-        search_results: List of search result dictionaries
-        max_urls: Maximum URLs to fetch
-        
-    Returns:
-        Formatted markdown context
     """
     # Extract URLs from search results
     urls = []
@@ -307,6 +338,9 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     
     async def test():
+        # Set to JS for testing
+        os.environ["URL_FETCHER_IMPLEMENTATION"] = "js"
+        
         # Test URL fetching
         test_urls = [
             "https://example.com",

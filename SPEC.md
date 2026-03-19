@@ -142,6 +142,26 @@ async def web_search_augmentation(kwargs):
 # This mapping is defined in litellm_config.yaml
 ```
 
+#### D. URL Fetching & Markdown Conversion
+The system supports fetching full content from search results and converting it to Markdown for LLM context.
+
+**Implementations:**
+1.  **Python (Default):** Uses `httpx` for fetching and `trafilatura`/`markdownify` for conversion. Fast and lightweight.
+2.  **JavaScript (Playwright):** Uses Playwright (Chromium), `@mozilla/readability`, and `turndown`. Handles dynamic content and SPAs better by rendering JS.
+
+**Configuration (`.env`):**
+```bash
+# Options: python, js
+URL_FETCHER_IMPLEMENTATION=js
+# Maximum URLs to fetch per query
+MAX_URL_FETCH=2
+# If true, web search is always performed first, bypassing intent detection
+INTERNET_SEARCH_FIRST=true
+```
+
+**Mechanism:**
+The Python `url_fetcher.py` acts as a dispatcher. If `js` is selected, it calls `node url_fetcher.js` via a subprocess.
+
 ---
 
 ### 5. Configuration (`litellm_config.yaml`)

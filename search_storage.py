@@ -15,7 +15,7 @@ from datetime import datetime
 logger = logging.getLogger("search_storage")
 
 # Storage directory
-STORAGE_DIR = "web_search"
+STORAGE_DIR = "logs/web_search"
 
 def get_storage_dir() -> str:
     """Get or create the storage directory."""

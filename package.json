@@ -1,0 +1,31 @@
+{
+  "name": "litellm_proxy",
+  "version": "1.0.0",
+  "description": "This project implements a secure, resilient, and extensible AI reverse proxy using LiteLLM.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fimtestxyz/litellm_proxy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/fimtestxyz/litellm_proxy/issues"
+  },
+  "homepage": "https://github.com/fimtestxyz/litellm_proxy#readme",
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "commander": "^14.0.3",
+    "jsdom": "^29.0.0",
+    "playwright": "^1.58.2",
+    "turndown": "^7.2.2"
+  }
+}
