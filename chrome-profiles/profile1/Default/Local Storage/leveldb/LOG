@@ -1,0 +1,6 @@
+2026/03/20-08:34:07.869 fbb4 Reusing MANIFEST /Users/wwkoon/.openclaw/workspace/litellm_proxy/chrome-profiles/profile1/Default/Local Storage/leveldb/MANIFEST-000001
+2026/03/20-08:34:07.869 fbb4 Recovering log #4
+2026/03/20-08:34:07.870 fbb4 Reusing old log /Users/wwkoon/.openclaw/workspace/litellm_proxy/chrome-profiles/profile1/Default/Local Storage/leveldb/000004.log 
+2026/03/20-08:35:07.873 fbb7 Level-0 table #7: started
+2026/03/20-08:35:07.876 fbb7 Level-0 table #7: 67884 bytes OK
+2026/03/20-08:35:07.878 fbb7 Delete type=0 #4

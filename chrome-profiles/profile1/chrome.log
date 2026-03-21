@@ -1,0 +1,61 @@
+
+DevTools listening on ws://127.0.0.1:9222/devtools/browser/e40e4cb6-0e46-4a33-914f-23031bcd8f24
+Trying to load the allocator multiple times. This is *not* supported.
+[6152:64348:0320/081709.472486:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6204:65038:0320/081726.230621:VERBOSE1:chrome/updater/updater.cc:432] Version: 148.0.7730.0, opt, ARM_64, command line: /Users/wwkoon/Library/Application Support/Google/GoogleUpdater/148.0.7730.0/GoogleUpdater.app/Contents/MacOS/GoogleUpdater --wake-all --enable-logging --vmodule=*/components/update_client/*=2,*/chrome/enterprise_companion/*=2,*/chrome/updater/*=2
+[6204:65038:0320/081726.230803:VERBOSE1:chrome/updater/updater.cc:435] OS version: 15.5.0, arch: arm64, System uptime (seconds): 3254, parent pid: 6152
+[6204:65038:0320/081726.232504:VERBOSE2:chrome/updater/event_history.cc:270] Emitted a UPDATER_PROCESS START event to the history log
+[6206:65042:0320/081726.238325:VERBOSE1:chrome/updater/updater.cc:432] Version: 148.0.7730.0, opt, ARM_64, command line: /Users/wwkoon/Library/Application Support/Google/GoogleUpdater/148.0.7730.0/GoogleUpdater.app/Contents/MacOS/GoogleUpdater --crash-handler --database=/Users/wwkoon/Library/Application Support/Google/GoogleUpdater/148.0.7730.0/Crashpad --url=https://clients2.google.com/cr/report --annotation=prod=Update4 --annotation=ver=148.0.7730.0 --handshake-fd=6 --enable-logging --vmodule=*/components/update_client/*=2,*/chrome/enterprise_companion/*=2,*/chrome/updater/*=2
+[6206:65042:0320/081726.238462:VERBOSE1:chrome/updater/updater.cc:435] OS version: 15.5.0, arch: arm64, System uptime (seconds): 3254, parent pid: 1
+[6206:65042:0320/081726.239882:VERBOSE2:chrome/updater/event_history.cc:270] Emitted a UPDATER_PROCESS START event to the history log
+[6204:65038:0320/081726.240225:VERBOSE1:chrome/updater/crash_reporter.cc:129] Crash handler launched and ready.
+[6204:65038:0320/081726.240728:VERBOSE1:chrome/updater/crash_client.cc:108] Found 0 completed crash reports
+[6204:65038:0320/081726.240780:VERBOSE1:chrome/updater/crash_client.cc:132] Found 0 pending crash reports
+[6204:65038:0320/081726.240839:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /Users/wwkoon/Library/Application Support/Google/RLZ/Crashpad/settings.dat: No such file or directory (2)
+[6204:65038:0320/081726.240851:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /Users/wwkoon/Library/Application Support/Google/consentOptions/Crashpad/settings.dat: No such file or directory (2)
+[6204:65038:0320/081726.241034:VERBOSE1:chrome/updater/updater.cc:106] Crash reporting initialized.
+[6204:65050:0320/081726.241290:VERBOSE1:chrome/updater/app/app_wakeall.cc:56] Launching `/Users/wwkoon/Library/Application Support/Google/GoogleUpdater/148.0.7730.0/GoogleUpdater.app/Contents/MacOS/GoogleUpdater --wake`
+[6207:65054:0320/081726.246245:VERBOSE1:chrome/updater/updater.cc:432] Version: 148.0.7730.0, opt, ARM_64, command line: /Users/wwkoon/Library/Application Support/Google/GoogleUpdater/148.0.7730.0/GoogleUpdater.app/Contents/MacOS/GoogleUpdater --wake --enable-logging --vmodule=*/components/update_client/*=2,*/chrome/enterprise_companion/*=2,*/chrome/updater/*=2
+[6207:65054:0320/081726.246374:VERBOSE1:chrome/updater/updater.cc:435] OS version: 15.5.0, arch: arm64, System uptime (seconds): 3254, parent pid: 6204
+[6207:65054:0320/081726.247643:VERBOSE2:chrome/updater/event_history.cc:270] Emitted a UPDATER_PROCESS START event to the history log
+[6209:65058:0320/081726.252636:VERBOSE1:chrome/updater/updater.cc:432] Version: 148.0.7730.0, opt, ARM_64, command line: /Users/wwkoon/Library/Application Support/Google/GoogleUpdater/148.0.7730.0/GoogleUpdater.app/Contents/MacOS/GoogleUpdater --crash-handler --database=/Users/wwkoon/Library/Application Support/Google/GoogleUpdater/148.0.7730.0/Crashpad --url=https://clients2.google.com/cr/report --annotation=prod=Update4 --annotation=ver=148.0.7730.0 --handshake-fd=6 --enable-logging --vmodule=*/components/update_client/*=2,*/chrome/enterprise_companion/*=2,*/chrome/updater/*=2
+[6209:65058:0320/081726.252777:VERBOSE1:chrome/updater/updater.cc:435] OS version: 15.5.0, arch: arm64, System uptime (seconds): 3254, parent pid: 1
+[6209:65058:0320/081726.253956:VERBOSE2:chrome/updater/event_history.cc:270] Emitted a UPDATER_PROCESS START event to the history log
+[6207:65054:0320/081726.254256:VERBOSE1:chrome/updater/crash_reporter.cc:129] Crash handler launched and ready.
+[6207:65054:0320/081726.254699:VERBOSE1:chrome/updater/crash_client.cc:108] Found 0 completed crash reports
+[6207:65054:0320/081726.254746:VERBOSE1:chrome/updater/crash_client.cc:132] Found 0 pending crash reports
+[6207:65054:0320/081726.254793:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /Users/wwkoon/Library/Application Support/Google/RLZ/Crashpad/settings.dat: No such file or directory (2)
+[6207:65054:0320/081726.254803:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /Users/wwkoon/Library/Application Support/Google/consentOptions/Crashpad/settings.dat: No such file or directory (2)
+[6207:65054:0320/081726.254952:VERBOSE1:chrome/updater/updater.cc:106] Crash reporting initialized.
+[6207:65054:0320/081726.255068:VERBOSE1:chrome/updater/ipc/update_service_internal_proxy_mojo.cc:59] Run
+[6207:65054:0320/081743.360985:VERBOSE1:chrome/updater/app/app.cc:53] Shutdown: 0
+[6207:65054:0320/081743.361276:VERBOSE2:chrome/updater/event_history.cc:270] Emitted a UPDATER_PROCESS END event to the history log
+[6207:65054:0320/081743.361286:VERBOSE1:chrome/updater/updater.cc:470] UpdaterMain (--wake) returned 0.
+[6204:65050:0320/081743.591718:VERBOSE1:chrome/updater/app/app_wakeall.cc:66] `/Users/wwkoon/Library/Application Support/Google/GoogleUpdater/148.0.7730.0/GoogleUpdater.app/Contents/MacOS/GoogleUpdater --wake` exited 0
+[6204:65038:0320/081743.591828:VERBOSE1:chrome/updater/app/app.cc:53] Shutdown: 0
+[6204:65038:0320/081743.592082:VERBOSE2:chrome/updater/event_history.cc:270] Emitted a UPDATER_PROCESS END event to the history log
+[6204:65038:0320/081743.592094:VERBOSE1:chrome/updater/updater.cc:470] UpdaterMain (--wake-all) returned 0.
+[6209:65058:0320/081753.377360:VERBOSE2:chrome/updater/event_history.cc:270] Emitted a UPDATER_PROCESS END event to the history log
+[6209:65058:0320/081753.377409:VERBOSE1:chrome/updater/updater.cc:470] UpdaterMain (--crash-handler) returned 0.
+[6206:65042:0320/081753.378652:VERBOSE2:chrome/updater/event_history.cc:270] Emitted a UPDATER_PROCESS END event to the history log
+[6206:65042:0320/081753.378935:VERBOSE1:chrome/updater/updater.cc:470] UpdaterMain (--crash-handler) returned 0.
+[6152:64297:0320/082109.981862:ERROR:chrome/browser/ui/views/user_education/impl/browser_user_education_interface_impl.cc:154] Attempting to show IPH IPH_ExtensionsZeroStatePromo before browser initialization complete; IPH will not be shown.
+[6152:64348:0320/082110.054338:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+Created TensorFlow Lite XNNPACK delegate for CPU.
+[6152:64348:0320/082136.193592:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6152:64348:0320/082228.507841:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+Trying to load the allocator multiple times. This is *not* supported.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1773966250.013716   69272 environment.cc:548] Selected adapter: Apple M4 Pro, arch=metal-3, vendor=apple, backend=Metal, adapterType=Integrated GPU
+I0000 00:00:1773966250.015702   69300 environment.cc:548] Selected adapter: Apple M4 Pro, arch=metal-3, vendor=apple, backend=Metal, adapterType=Integrated GPU
+[6152:64348:0320/082427.429061:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6152:64297:0320/083003.229112:ERROR:chrome/browser/ui/views/user_education/impl/browser_user_education_interface_impl.cc:154] Attempting to show IPH IPH_ExtensionsZeroStatePromo before browser initialization complete; IPH will not be shown.
+[6152:64348:0320/083003.309804:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6152:64348:0320/083138.835496:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6152:64297:0320/083305.665190:ERROR:chrome/browser/ui/views/user_education/impl/browser_user_education_interface_impl.cc:154] Attempting to show IPH IPH_ExtensionsZeroStatePromo before browser initialization complete; IPH will not be shown.
+[6152:64348:0320/083305.710669:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6152:64348:0320/083353.613525:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6152:64348:0320/083407.976964:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6152:64348:0320/083431.516257:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6152:64348:0320/083523.723269:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[6152:64348:0320/083657.808277:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT

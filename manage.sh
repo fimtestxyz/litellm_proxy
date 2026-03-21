@@ -71,6 +71,7 @@ start_native() {
 
     export CONFIG_FILE="$CONFIG_FILE"
     export PORT="$PORT"
+    log_info "SEARCH_PROVIDER=$SEARCH_PROVIDER" 
 
     log_info "Scanning for Ollama models..."
     uv run python main.py --discover
