@@ -8,7 +8,7 @@ from typing import List, Dict, Optional
 
 try:
     from playwright.async_api import async_playwright, Page, BrowserContext, Browser
-    import playwright_stealth
+    # import playwright_stealth
     HAS_PLAYWRIGHT = True
 except ImportError:
     HAS_PLAYWRIGHT = False
@@ -229,7 +229,7 @@ async def search_with_chrome(
     async with async_playwright() as p:
         launch_args = [
             "--disable-blink-features=AutomationControlled",
-            "--no-sandbox",
+            # "--no-sandbox",
             "--disable-infobars",
             "--disable-dev-shm-usage",
             "--disable-extensions"
@@ -248,7 +248,7 @@ async def search_with_chrome(
             )
 
             page = context.pages[0] if context.pages else await context.new_page()
-            await playwright_stealth.Stealth().apply_stealth_async(page)
+            # await playwright_stealth.stealth_async(page)
             
             # Additional stealth: override navigator.webdriver
             await page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
@@ -282,12 +282,15 @@ async def _perform_google_search(page: Page, query: str, num_results: int) -> Li
     """Shared logic for navigating and extracting Google results."""
     search_url = build_google_url(query, num_results)
     logger.info(f"🔍 [Chrome] Searching Google: {query}")
+
     
     # Random delay before navigation
-    await asyncio.sleep(random.uniform(0.5, 1.5))
+    # await asyncio.sleep(random.uniform(0.5, 1.5))
+
     
     try:
         await page.goto(search_url, wait_until="domcontentloaded", timeout=30000)
+        # await asyncio.sleep(10)
     except Exception as e:
         logger.warning(f"Initial navigation timeout, retrying... {e}")
         await page.goto(search_url, wait_until="load", timeout=30000)

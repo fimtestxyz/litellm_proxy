@@ -252,14 +252,19 @@ async def fetch_and_format_urls(
     save_to_file: bool = True
 ) -> str:
     """
-    Fetch multiple URLs and format as markdown context for LLM.
+    Fetch multiple URLs in parallel and format as markdown context for LLM.
     """
     urls_to_fetch = urls[:max_urls]
-    results = []
     
-    for url in urls_to_fetch:
-        content_data = await fetch_url_content(url)
-        
+    # Create fetch tasks for all URLs
+    tasks = [fetch_url_content(url) for url in urls_to_fetch]
+    
+    # Execute all tasks concurrently
+    logger.info(f"Fetching {len(urls_to_fetch)} URLs in parallel...")
+    raw_results = await asyncio.gather(*tasks)
+    
+    results = []
+    for content_data in raw_results:
         if content_data:
             if save_to_file:
                 save_fetched_content(content_data)
